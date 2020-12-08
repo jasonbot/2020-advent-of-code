@@ -1,17 +1,23 @@
-def group_lines():
-    for group in open('day6.input'):
-        line_ = set()
-        for line in group:
-            if line.strip():
-                line_ |= set(line.strip())
+def group_lines(all=False):
+    group_line_set = None
+    for line in open('day6.input'):
+        if line.strip():
+            if group_line_set is None:
+                group_line_set = set(line.strip())
             else:
-                yield line_, len(line_)
-                line_ = set()
+                if all:
+                    group_line_set &= set(line.strip())
+                else:
+                    group_line_set |= set(line.strip())
+        else:
+            yield group_line_set
+            group_line_set = None
 
-    if line_:
-        yield line_, len(line_)
+    if group_line_set is not None:
+        yield group_line_set
 
 for ll in group_lines():
     print(ll)
 
-print(sum([l[1] for l in group_lines()]))
+print(sum([len(l) for l in group_lines(all=False)]))
+print(sum([len(l) for l in group_lines(all=True)]))

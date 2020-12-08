@@ -1,4 +1,5 @@
 import collections
+import functools
 import re
 
 
@@ -29,7 +30,7 @@ def build_graph():
 def traverse_graph(start_key, graph, traversal=None):    
     if start_key in graph:
         if traversal is None:
-            traversal = {start_key}
+            traversal = set()
         else:
             if start_key in traversal:
                 return traversal
@@ -42,8 +43,26 @@ def traverse_graph(start_key, graph, traversal=None):
 
     return traversal
 
+
+def traverse_total(start_key, graph, num=(), items=None):
+    if items is None:
+        items = [(start_key, num)]
+    for subitem, total in graph[start_key].items():
+        for item in traverse_total(subitem, graph, num + (total, )):
+            items.append(item)
+    return items
+
 graph = build_graph()
 for key in graph:
-    print(traverse_graph(key, graph))
+    traversal = traverse_graph(key, graph)
+
 
 print(sum(1 if 'shiny gold' in traverse_graph(key, graph) else 0 for key in graph))
+print('shiny gold')
+print(graph['shiny gold'])
+print('-----')
+traversal = traverse_total('shiny gold', graph)
+
+
+reduction = [functools.reduce(lambda x, y: x * y, i[1], 1) for i in traversal]
+print(sum(reduction))
