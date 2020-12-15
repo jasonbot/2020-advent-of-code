@@ -16,12 +16,10 @@ def build_graph():
             bag_name = bag_groups[0]
             bag_sentence = bag_groups[1].strip('.')
             parts = [s.strip() for s in bag_sentence.split(",")]
-            print(bag_sentence, parts)
             for line in parts:
                 ct = line.split(' ')[0]
                 count = (int(ct) if ct.lower() != 'no' else 0)
                 rest = ' '.join(line.split(' ')[1:-1])
-                print("BNCR", bag_name, count, rest)
                 graph[bag_name][rest] += count
 
     return graph
@@ -57,12 +55,8 @@ for key in graph:
     traversal = traverse_graph(key, graph)
 
 
-print(sum(1 if 'shiny gold' in traverse_graph(key, graph) else 0 for key in graph))
-print('shiny gold')
-print(graph['shiny gold'])
-print('-----')
+print("Possible bags", sum(1 if 'shiny gold' in traverse_graph(key, graph) else 0 for key in graph))
+
 traversal = traverse_total('shiny gold', graph)
-
-
 reduction = [functools.reduce(lambda x, y: x * y, i[1], 1) for i in traversal]
-print(sum(reduction))
+print("Bag count", sum(reduction))
